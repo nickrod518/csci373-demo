@@ -1,0 +1,35 @@
+name: Demo
+main: edu.unca.nrodrigu.Demo.Demo
+version: 0.3
+author: Nick Rodriguez
+description: Simple plugin with commands and listeners
+commands:
+  demo:
+    description: base for this plugin
+    usage: /demo <command>
+    permission: demo.*
+    permission-message: You don't have permission to use this command.
+permissions:
+  demo.*:
+    description: permissions of all demo plugin commands
+    children:
+      demo.cake:
+        description: give the player a block of cake
+        usage: /demo cake
+        default: true
+      demo.pit:
+        description: transforms next 10 blocks below player to air
+        usage: /demo pit
+        default: true
+      demo.midas:
+        description: transform the block player is standing on to gold
+        usage: /demo midas
+        default: true
+      demo.zdefend:
+        description: launch a horde of zombies - defend yourself with a diamond sword
+        usage: /demo zdefend
+        default: true
+      demo.pitplayer:
+        description: create a pit under another player
+        usage: /demo pitplayer <player>
+        default: op
