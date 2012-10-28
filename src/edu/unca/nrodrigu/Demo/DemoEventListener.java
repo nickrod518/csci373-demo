@@ -31,8 +31,10 @@ public class DemoEventListener implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		plugin.logger.info("Give a warm welcome to " + event.getPlayer());
-		event.getPlayer().sendMessage("Welcome " + event.getPlayer() + " enjoy your stay!");
+		plugin.logger.info("Give a warm welcome to " + event.getPlayer().getName());
+		event.getPlayer().sendMessage("Welcome " + event.getPlayer().getName() + " enjoy your stay!");
+		Player fred = event.getPlayer();
+		plugin.setMetadata(fred, "midas", false, plugin);
 	}
 
 	/*
@@ -47,9 +49,8 @@ public class DemoEventListener implements Listener {
 		Block b = w.getBlockAt(loc);
 		if (b.isLiquid()) {
 			b.setTypeId(3);
-			plugin.logger.info(event.getPlayer() + " is walking on liquid.");
+			plugin.logger.info(event.getPlayer().getName() + " is walking on liquid.");
 		}
-
 	}
 	
 	/*
@@ -61,16 +62,35 @@ public class DemoEventListener implements Listener {
 	}
 
 	/*
-	 * when the player left clicks a block, it turns to gold
+	 * when the player left clicks a block and midas is enabled, it turns to gold
 	 */
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void midasTouch(PlayerInteractEvent event) {
-		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			Block b = event.getClickedBlock();
-			if (b != null) {
+		if ((Boolean) plugin.getMetadata(event.getPlayer(), "midas", plugin)) {
+			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+				Block b = event.getClickedBlock();
+				if (b != null) {
+					b.setTypeId(41);
+					event.getPlayer().sendMessage("Everything you touch turns to gold!");
+					plugin.logger.info(event.getPlayer().getName() + " is turning things to gold again...");
+				}
+			}
+		}
+	}
+	
+	/*
+	 * if midas is enabled, blocks the player steps on turn to gold
+	 */
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void midas(PlayerMoveEvent event) {
+		if ((Boolean) plugin.getMetadata(event.getPlayer(), "midas", plugin)) {
+			Player fred = event.getPlayer();
+			Location loc = fred.getLocation();
+			World w = loc.getWorld();
+			loc.setY(loc.getY() - 1);
+			Block b = w.getBlockAt(loc);
+			if (!b.isLiquid() && !b.isEmpty()) {
 				b.setTypeId(41);
-				event.getPlayer().sendMessage("Everything you touch turns to gold!");
-				plugin.logger.info(event.getPlayer() + " is turning things to gold again...");
 			}
 		}
 	}
